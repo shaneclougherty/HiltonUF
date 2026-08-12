@@ -303,6 +303,95 @@
     font-weight: 500;
   }
 
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+  }
+
+  .modal-sheet {
+    background: var(--white);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 16px 16px 0 0;
+    padding: 28px 24px 36px;
+    text-align: center;
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .modal-sheet .modal-title {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .modal-sheet .modal-sub {
+    font-size: 14px;
+    color: var(--slate);
+    margin-bottom: 24px;
+    line-height: 1.4;
+  }
+
+  .modal-btn {
+    display: block;
+    width: 100%;
+    padding: 16px 28px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    margin-bottom: 10px;
+  }
+
+  .modal-btn-app {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .modal-btn-app:hover { background: var(--navy-hover); }
+
+  .modal-btn-web {
+    background: var(--ice);
+    color: var(--navy);
+    border: 1px solid var(--rule);
+  }
+
+  .modal-btn-web:hover { background: #E8ECF1; }
+
+  .modal-dismiss {
+    background: none;
+    border: none;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--slate);
+    cursor: pointer;
+    margin-top: 8px;
+    padding: 8px;
+  }
+
   @media (min-width: 640px) {
     .hero { padding: 64px 32px 56px; }
     .hero h1 { font-size: 38px; max-width: 520px; }
@@ -376,7 +465,7 @@
       <div class="when">Fall Season</div>
     </div>
   </div>
-  <a href="https://www.hilton.com/en/book/reservation/flexibledates/?ctyhocn=GVNCCHF&corporateCode=3583762&flexibleDate=true&room1NumAdults=1" class="book-btn">Book Your Family Rate</a>
+  <a id="bookBtn" href="https://www.hilton.com/en/book/reservation/flexibledates/?ctyhocn=GVNCCHF&corporateCode=3583762&flexibleDate=true&room1NumAdults=1" class="book-btn">Book Your Family Rate</a>
   <div class="book-note">Takes you directly to Hilton.com with your rate applied</div>
 </section>
 
@@ -416,6 +505,16 @@
   <a href="tel:3523713600" class="fphone">(352) 371-3600</a>
 </footer>
 
+<div class="modal-overlay" id="appModal">
+  <div class="modal-sheet">
+    <div class="modal-title">Book Your Stay</div>
+    <div class="modal-sub">For the best mobile experience, book through the Hilton Honors app.</div>
+    <a id="appStoreBtn" href="#" class="modal-btn modal-btn-app">Open Hilton Honors App</a>
+    <a id="webBtn" href="https://www.hilton.com/en/book/reservation/flexibledates/?ctyhocn=GVNCCHF&corporateCode=3583762&flexibleDate=true&room1NumAdults=1" class="modal-btn modal-btn-web">Continue to Website</a>
+    <button class="modal-dismiss" id="modalClose">Cancel</button>
+  </div>
+</div>
+
 <script>
   var params = new URLSearchParams(window.location.search);
   var group = params.get('group');
@@ -423,6 +522,37 @@
     document.getElementById('groupName').textContent = group + ' Families';
     document.title = group + ' Family Rate | Hilton UF Conference Center';
   }
+
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  var appStoreBtn = document.getElementById('appStoreBtn');
+  if (isIOS) {
+    appStoreBtn.href = 'https://apps.apple.com/app/hilton-honors-book-hotels/id635150066';
+  } else {
+    appStoreBtn.href = 'https://play.google.com/store/apps/details?id=com.hilton.android.hhonors';
+  }
+
+  var bookBtn = document.getElementById('bookBtn');
+  var modal = document.getElementById('appModal');
+  var modalClose = document.getElementById('modalClose');
+
+  if (isMobile) {
+    bookBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      modal.classList.add('active');
+    });
+  }
+
+  modalClose.addEventListener('click', function() {
+    modal.classList.remove('active');
+  });
+
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.classList.remove('active');
+    }
+  });
 </script>
 
 </body>
